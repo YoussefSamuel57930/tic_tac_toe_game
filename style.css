@@ -1,0 +1,199 @@
+*, *:after, *:before {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+    user-select: none;
+}
+
+:root {
+    --spot-size: 20vmin;
+    --spots-borders_size: 1.5vmin;
+    --X_O_size: 2vmin;
+    --bg-color: #1e1e1e;
+    --primary_color: #5f6b83;
+    --X_color: #d64c3e;
+    --O_color: #1bb396;
+    --animation-duration: 1s;
+    --border-radius: 0.75vmin;
+}
+
+body {
+    height: 100vh;
+    display: grid;
+    place-content: center;
+    overflow: hidden;
+    background-color: var(--bg-color);
+}
+
+.container {
+    position: relative;
+}
+
+.grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, var(--spot-size));
+    grid-template-rows: repeat(3, var(--spot-size));
+    grid-gap: var(--spots-borders_size);
+    transition: all var(--animation-duration) ease;
+}
+
+.grid.inactive {
+    scale: 0;
+    opacity: 0;
+}
+
+.spots-borders {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary_color);
+    transform: scale(0);
+    transition: all var(--animation-duration) ease;
+    z-index: -1;
+}
+
+.spots-borders.active {
+    transform: scale(1);
+}
+
+.spot {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    cursor: pointer;
+}
+
+.X, .O {
+    --y: 0;
+    --x: 0;
+    position: absolute;
+    top: calc(var(--y) * (var(--spot-size) + var(--spots-borders_size)));
+    left: calc(var(--x) * (var(--spot-size) + var(--spots-borders_size)));
+    width: var(--spot-size);
+    aspect-ratio: 1/1;
+    transition: all var(--animation-duration) ease;
+}
+
+.grid .X, .grid .O {
+    scale: 0;
+    animation: player_element_animation calc(var(--animation-duration) / 2) ease forwards;
+    z-index: 100;
+}
+
+@keyframes player_element_animation {
+    to {
+        scale: 1;
+    }
+}
+
+.X:after, .X:before, .O:after {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 50%;
+    width: calc(var(--spot-size) * 0.75);
+    translate: -50% -50%;
+}
+
+.X:after, .X:before {
+    height: var(--X_O_size);
+    background-color: var(--X_color);
+    border-radius: var(--border-radius);
+}
+
+.X:after {
+    transform: rotate(45deg);
+}
+
+.X:before {
+    transform: rotate(-45deg);
+}
+
+.O:after {
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: var(--X_O_size) solid var(--O_color);
+}
+
+.strike_line {
+    --index: 0;
+    --is_vertical: 0;
+    --is_horizontal: 0;
+    --scale: 0 0;
+    position: absolute;
+    top: calc(var(--is_horizontal) * (var(--spot-size) * (var(--index) + 0.5) + var(--spots-borders_size) * (var(--index))));
+    left: calc(var(--is_vertical) * (var(--spot-size) * (var(--index) + 0.5) + var(--spots-borders_size) * (var(--index))));
+    width: 100%;
+    height: var(--spots-borders_size);
+    transform-origin: right;
+    rotate: -45deg;
+    translate: 0 -50%;
+    scale: 0 1;
+    background-color: var(--primary_color);
+    border-radius: var(--border-radius);
+    transition: all var(--animation-duration) ease;
+    animation: strike_line_animation var(--animation-duration) cubic-bezier(0.53, 0.98, 0.55, 1) forwards;
+    z-index: 100;
+}
+
+@keyframes strike_line_animation {
+    to {
+        scale: var(--scale);
+    }
+}
+
+.final_result {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.final_result .state {
+    position: absolute;
+    top: 100%;
+    left: -100%;
+    translate: -50% 0;
+    font-size: 0;
+    text-transform: uppercase;
+    color: var(--primary_color);
+    opacity: 0;
+    transition: all var(--animation-duration) ease;
+}
+
+.final_result.active {
+    z-index: 100;
+}
+
+.final_result.active .state {
+    top: 60%;
+    left: 50%;
+    font-size: 15vmin;
+    opacity: 1;
+}
+
+.final_result .X, .final_result .O {
+    --y: 1;
+    --x: 1;
+    top: calc(1 * (var(--spot-size) + var(--spots-borders_size)));
+    left: calc(1 * (var(--spot-size) + var(--spots-borders_size)));
+    opacity: 0;
+    animation: final_result_element_animation calc(var(--animation-duration)) ease forwards;
+
+}
+
+@keyframes final_result_element_animation {
+    to {
+        opacity: 1;
+        scale: 3;
+        translate: 0 -100%;
+        top: calc(var(--y) * (var(--spot-size) + var(--spots-borders_size)));
+        left: calc(var(--x) * (var(--spot-size) + var(--spots-borders_size)));
+    }
+}
