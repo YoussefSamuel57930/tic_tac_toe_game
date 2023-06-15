@@ -1,3 +1,2 @@
-# tic_tac_toe_game
+# minimax algorithm tic_tac_toe_game
 Tic Tac Toe Game in Javascript
-##minimax algorithm 
