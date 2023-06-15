@@ -165,6 +165,7 @@ const ai_move = async (board, player) => {
 
     return await turn(board, player, position);
 }
+
 const turn = async (board, player, position) => {
     await move_player(player, position);
     const result = await evaluate_board(board, player);
